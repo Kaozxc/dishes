@@ -6,9 +6,10 @@ import React from 'react';
 
 export default function App() {
 
-  const onSubmit = async values => {
-    saveDish(values).then(response => {
+  const onSubmit = async (values, form) => {
+    return saveDish(values).then(response => {
       toast.success('Dish has been saved');
+      form.reset();
     }).catch(error => {
       if (error.response.status === 400) {
         toast.error('We couldn\'t save the dish');
@@ -36,7 +37,7 @@ export default function App() {
             {({ input, meta }) => (
               <div>
                 <label>Number of slices</label>
-                <input {...input} className='input' type='number' min='1' placeholder='Number of slices' />
+                <input {...input} type='number' min='1' placeholder='Number of slices' />
                 {(meta.error || meta.submitError) && meta.touched && (
                   <span className='error'>{meta.error || meta.submitError}</span>)}
               </div>
@@ -66,7 +67,7 @@ export default function App() {
           {({ input, meta }) => (
             <div>
               <label>Spiciness scale</label>
-              <input {...input} type='number' min='1' max='10' placeholder='Spiciness scale' />
+              <input {...input} type='number' min='1' placeholder='Spiciness scale' />
               {(meta.error || meta.submitError) && meta.touched && (
                 <span>{meta.error || meta.submitError}</span>)}
             </div>
@@ -96,9 +97,7 @@ export default function App() {
         <Form
           onSubmit={onSubmit}
           render={({ handleSubmit, form, submitting, pristine, values }) => (
-            <form onSubmit={event => {
-              handleSubmit(event).then(form.reset);
-            }}
+            <form onSubmit={handleSubmit}
             >
               <Field name='name' validate={required}>
                 {({ input, meta }) => (
